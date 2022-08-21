@@ -1,0 +1,29 @@
+{
+  "heroes": [
+    {
+      "id": 555,
+      "name": "TEST DELETE - ID 555",
+      "description": "Герой-used",
+      "element": "earth"
+    },
+    {
+      "id": "669da6aa-b550-4ed5-a7a0-89897571e132",
+      "name": "CAPTAIN MARVEL (GENIS-VELL)",
+      "description": "Test create character",
+      "element": "fire"
+    },
+    {
+      "id": "6297470e-fc53-46cf-812e-27f3080a637f",
+      "name": "Some hero",
+      "description": "nothing",
+      "element": "water"
+    }
+  ],
+  "filters": [
+    "all",
+    "fire",
+    "water",
+    "wind",
+    "earth"
+  ]
+}
