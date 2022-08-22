@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from "reselect";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
-import { fetchHeroes, heroDelete } from '../../actions';
+import { fetchHeroes } from '../../actions';
+import { heroesDelete } from "../../reduxSlices/heroesSlice";
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
@@ -50,7 +51,7 @@ const HeroesList = () => {
   const onDelete = (id) => {
     request(`http://localhost:3001/heroes/${id}`, "DELETE")
       .then(data => console.log(data, "DELETED"))
-      .then(() => dispatch(heroDelete(id)))
+      .then(() => dispatch(heroesDelete(id)))
       .catch(error => console.log(error));
   }
 
@@ -81,6 +82,7 @@ const HeroesList = () => {
     })
   }
 
+  console.log(filteredHeroes)
   const elements = setContent(filteredHeroes);
   return (
     <TransitionGroup component="ul">

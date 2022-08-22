@@ -5,7 +5,9 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
 import {v4 as uuidv4} from "uuid";
 
-import {fetchFilters, heroCreate} from "../../actions";
+import {fetchFilters} from "../../actions";
+import {heroesCreate} from "../../reduxSlices/heroesSlice";
+
 import {useHttp} from "../../hooks/http.hook";
 // Задача для этого компонента: - DONE
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -69,7 +71,7 @@ const HeroesAddForm = () => {
 
     request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
       .then(result => console.log(result))
-      .then(() => dispatch(heroCreate(newHero)))
+      .then(() => dispatch(heroesCreate(newHero)))
       .catch(error => console.log(error));
     reset();
   }

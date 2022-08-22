@@ -1,6 +1,6 @@
 import {connect} from "react-redux";
 import {useMemo} from "react";
-import {activeFilterChange} from "../../actions";
+import {filtersActiveChange} from "../../reduxSlices/filtersSlice";
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных - done
@@ -9,7 +9,7 @@ import {activeFilterChange} from "../../actions";
 // Изменять json-файл для удобства МОЖНО! - made it cooler
 // Представьте, что вы попросили бэкенд-разработчика об этом - idfc
 
-const HeroesFilters = ({heroes, activeFilter, activeFilterChange}) => {
+const HeroesFilters = ({heroes, filters, activeFilter, filtersActiveChange}) => {
   const getData = (power) => {
     switch (power) {
       case "earth":
@@ -43,7 +43,7 @@ const HeroesFilters = ({heroes, activeFilter, activeFilterChange}) => {
   const onChangeFilter = (e) => {
     const targetElem = e.target;
     const filterType = targetElem.getAttribute("data-filter-type");
-    activeFilterChange(filterType)
+    filtersActiveChange(filterType)
   }
 
   const elems = useMemo(() => {
@@ -70,6 +70,7 @@ const HeroesFilters = ({heroes, activeFilter, activeFilterChange}) => {
     // eslint-disable-next-line
   }, [heroes])
 
+  console.log(heroes);
   return (
     <div className="card shadow-lg mt-4">
       <div className="card-body">
@@ -92,22 +93,12 @@ const HeroesFilters = ({heroes, activeFilter, activeFilterChange}) => {
 
 const mapStateToProps = state => ({
   heroes: state.heroes.heroes,
-  activeFilter: state.filters.activeFilter,
-  getListUniquePowers: () => {
-    const uniquePowers = [];
-    const allPowers = state.heroes.heroes.map(({element}) => element);
-
-    for (const element of allPowers) {
-      if(!uniquePowers.includes(element)) {
-        uniquePowers.push(element);
-      }
-    }
-    console.log(uniquePowers)
-  }
+  filters: state.filters.filters,
+  activeFilter: state.filters.activeFilter
 });
 const mapDispatchToProps = dispatch => {
   return {
-    activeFilterChange: (filter) => dispatch(activeFilterChange(filter))
+    filtersActiveChange: (filter) => dispatch(filtersActiveChange(filter))
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(HeroesFilters);
