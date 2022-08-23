@@ -1,22 +1,22 @@
-import {createAction} from "@reduxjs/toolkit";
-import {heroesFetched, heroesFetching, heroesFetchingError} from "../reduxSlices/heroesSlice";
-import {filtersFetched, filtersFetching, filtersFetchingError} from "../reduxSlices/filtersSlice";
+// import {createAction} from "@reduxjs/toolkit";
+// import {heroesFetched, heroesFetching, heroesFetchingError} from "../reduxSlices/heroesSlice";
+// import {filtersFetched, filtersFetching, filtersFetchingError} from "../reduxSlices/filtersSlice";
 
-export const fetchHeroes = (request) => (dispatch) => {
-  dispatch(heroesFetching());
-  request("http://localhost:3001/heroes")
-    .then(data => {
-      console.log(data);
-      dispatch(heroesFetched(data));
-    })
-    .catch(() => dispatch(heroesFetchingError()))
-}
-export const fetchFilters = (request) => (dispatch) => {
-  dispatch(filtersFetching());
-  request("http://localhost:3001/filters")
-    .then(filters => dispatch(filtersFetched(filters)))
-    .catch(filtersFetchingError());
-}
+// export const fetchHeroes = (request) => (dispatch) => {
+//   dispatch(heroesFetching());
+//   request("http://localhost:3001/heroes")
+//     .then(data => {
+//       console.log(data);
+//       dispatch(heroesFetched(data));
+//     })
+//     .catch(() => dispatch(heroesFetchingError()))
+// }
+// export const fetchFilters = (request) => (dispatch) => {
+//   dispatch(filtersFetching());
+//   request("http://localhost:3001/filters")
+//     .then(filters => dispatch(filtersFetched(filters)))
+//     .catch(filtersFetchingError());
+// }
 
 
 // hero actions

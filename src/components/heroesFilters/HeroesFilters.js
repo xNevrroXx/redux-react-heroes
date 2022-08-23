@@ -1,6 +1,7 @@
 import {connect} from "react-redux";
 import {useMemo} from "react";
-import {filtersActiveChange} from "../../reduxSlices/filtersSlice";
+import {filtersActiveChange, selectAll as selectAllFilters} from "../../reduxSlices/filtersSlice";
+import {selectAll} from "../../reduxSlices/heroesSlice";
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных - done
@@ -9,7 +10,7 @@ import {filtersActiveChange} from "../../reduxSlices/filtersSlice";
 // Изменять json-файл для удобства МОЖНО! - made it cooler
 // Представьте, что вы попросили бэкенд-разработчика об этом - idfc
 
-const HeroesFilters = ({heroes, filters, activeFilter, filtersActiveChange}) => {
+const HeroesFilters = ({heroes, activeFilter, filtersActiveChange}) => {
   const getData = (power) => {
     switch (power) {
       case "earth":
@@ -70,7 +71,6 @@ const HeroesFilters = ({heroes, filters, activeFilter, filtersActiveChange}) => 
     // eslint-disable-next-line
   }, [heroes])
 
-  console.log(heroes);
   return (
     <div className="card shadow-lg mt-4">
       <div className="card-body">
@@ -92,8 +92,7 @@ const HeroesFilters = ({heroes, filters, activeFilter, filtersActiveChange}) => 
 }
 
 const mapStateToProps = state => ({
-  heroes: state.heroes.heroes,
-  filters: state.filters.filters,
+  heroes: selectAll(state),
   activeFilter: state.filters.activeFilter
 });
 const mapDispatchToProps = dispatch => {

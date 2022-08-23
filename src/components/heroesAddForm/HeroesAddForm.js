@@ -5,7 +5,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
 import {v4 as uuidv4} from "uuid";
 
-import {fetchFilters} from "../../actions";
+import {fetchFilters, selectAll} from "../../reduxSlices/filtersSlice";
 import {heroesCreate} from "../../reduxSlices/heroesSlice";
 
 import {useHttp} from "../../hooks/http.hook";
@@ -16,7 +16,7 @@ import {useHttp} from "../../hooks/http.hook";
 // Усложненная задача:
 // Персонаж создается и в файле json при помощи метода POST - done
 // Дополнительно:
-// Элементы <option></option> желательно сформировать на базе - бессмысленная задача
+// Элементы <option></option> желательно сформировать на базе - done
 // данных из фильтров
 
 const validationSchema = object({
@@ -32,7 +32,7 @@ const validationSchema = object({
 
 const HeroesAddForm = () => {
   const heroes = useSelector(state => state.heroes.heroes);
-  const filters = useSelector(state => state.filters.filters);
+  const filters = useSelector(selectAll);
   const dispatch = useDispatch();
   const {request} = useHttp();
 
@@ -59,12 +59,12 @@ const HeroesAddForm = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchFilters(request));
+    dispatch(fetchFilters());
     // eslint-disable-next-line
   }, [])
 
   const onSubmit = (data) => {
-    const allHeroes = heroes.slice();
+    const allHeroes = [...heroes];
 
     const id = createNewId(allHeroes);
     const newHero = {id: id, ...data};

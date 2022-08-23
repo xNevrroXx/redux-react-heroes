@@ -1,28 +1,16 @@
 {
   "heroes": [
     {
-      "id": "669da6aa-b550-4ed5-a7a0-89897571e132",
-      "name": "CAPTAIN MARVEL (GENIS-VELL)",
-      "description": "Test create character",
-      "element": "fire"
-    },
-    {
-      "id": "6297470e-fc53-46cf-812e-27f3080a637f",
-      "name": "Some hero",
-      "description": "nothing",
+      "id": "3349c0c0-f890-4af1-b705-f5e7e5149793",
+      "name": "water element hero",
+      "description": "swimming on vacation",
       "element": "water"
     },
     {
-      "id": "9edfed84-2d96-419a-9a2c-dc8ef48e0c31",
-      "name": "Thor",
-      "description": "somthing",
-      "element": "wind"
-    },
-    {
-      "id": "b4446f8b-e0c4-4b25-8109-b9b3fbb67bf6",
-      "name": "CAPTAIN MARVEL (GENIS-VELL)",
-      "description": "sdafasdf",
-      "element": "fire"
+      "id": "dcdaa777-8f5e-42e0-8f6f-694a1e7effdf",
+      "name": "GRUT",
+      "description": "I'm GRUT",
+      "element": "earth"
     }
   ],
   "filters": [

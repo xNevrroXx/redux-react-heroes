@@ -1,45 +1,60 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSlice, nanoid} from "@reduxjs/toolkit";
+import {useHttp} from "../hooks/http.hook";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface IFiltersReducerState {
   filters: string[],
-  filterLoadingStatus: "idle" | "loading" | "error",
+  filtersLoadingStatus: "idle" | "loading" | "error",
   activeFilter: string
-
 }
 
-const initialState: IFiltersReducerState = {
-  filters: [],
-  filterLoadingStatus: "idle",
+// const initialState: IFiltersReducerState = {
+//   filters: [],
+//   filtersLoadingStatus: "idle",
+//   activeFilter: "all"
+// }
+
+const filtersAdapter = createEntityAdapter({
+  selectId: (filters) => nanoid()
+});
+const initialState = filtersAdapter.getInitialState({
+  filtersLoadingStatus: "idle",
   activeFilter: "all"
-}
+})
+
+export const fetchFilters = createAsyncThunk(
+  "filters/fetchFilters",
+  () => {
+    const {request} = useHttp();
+    return request("http://localhost:3001/filters");
+  }
+)
 
 const filtersSlice = createSlice({
   name: "filters",
   initialState,
   reducers: {
-    filtersFetching: (state) => {
-      state.filterLoadingStatus = "loading";
-    },
-    filtersFetched: (state, action: PayloadAction<string[]>) => {
-      state.filterLoadingStatus = "idle";
-      state.filters = action.payload;
-    },
-    filtersFetchingError: (state) => {
-      state.filterLoadingStatus = "error";
-    },
     filtersActiveChange: (state, action: PayloadAction<string>) => {
       state.activeFilter = action.payload;
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchFilters.pending, (state) => {
+        state.filtersLoadingStatus = "loading";
+      })
+      .addCase(fetchFilters.fulfilled, (state, action: PayloadAction<string[]>) => {
+        state.filtersLoadingStatus = "idle";
+        filtersAdapter.setAll(state, action.payload);
+      })
+      .addCase(fetchFilters.rejected, (state) => {
+        state.filtersLoadingStatus = "error";
+      })
   }
 })
 
-const {actions, reducer: filtersReducer} = filtersSlice;
+const {actions, reducer} = filtersSlice;
 
-export default filtersReducer;
-export const {
-  filtersFetching,
-  filtersFetched,
-  filtersFetchingError,
-  filtersActiveChange
-} = actions;
+export default reducer;
+export const {selectAll} = filtersAdapter.getSelectors((state: any) => state.filters)
+export const {filtersActiveChange} = actions;

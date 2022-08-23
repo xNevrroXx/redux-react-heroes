@@ -5,8 +5,8 @@ import ReduxThunk from "redux-thunk";
 // reduxSlices
 // import heroes from "../reduxSlices/heroes";
 // import filters from "../reduxSlices/filters";
-import heroesReducer from "../reduxSlices/heroesSlice";
-import filtersReducer from "../reduxSlices/filtersSlice";
+import heroes from "../reduxSlices/heroesSlice";
+import filters from "../reduxSlices/filtersSlice";
 
 // via applyMiddleware
 const loggerMiddleware = ({getState}) => dispatch => action => {
@@ -66,7 +66,7 @@ const composedEnhancersMiddleware = compose(
 
 
 // reducer && store
-const rootReducer = combineReducers({heroesReducer, filtersReducer});
+const rootReducer = combineReducers({heroes, filters});
 const store2 = createStore(
   rootReducer,
   undefined,
@@ -76,11 +76,11 @@ const store2 = createStore(
 
 // via configure store
 const store = configureStore({
-  reducer: {heroes: heroesReducer, filters: filtersReducer},
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(loggerMiddleware, stringMiddleware),
+  reducer: {heroes, filters},
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stringMiddleware),
   preloadedState: undefined,
   devTools: process.env.NODE_ENV !== "production",
-  // enhancers: [stringEnhancer]
+  enhancers: [loggerEnhancer]
 })
 
 export default store;
