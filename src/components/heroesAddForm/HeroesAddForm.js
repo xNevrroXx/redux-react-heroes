@@ -1,4 +1,4 @@
-import {useCallback, useEffect} from "react";
+import {useCallback, useEffect, useMemo} from "react";
 import {useForm} from "react-hook-form";
 import {object, string,} from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {v4 as uuidv4} from "uuid";
 
 import {fetchFilters, selectAll} from "../../reduxSlices/filtersSlice";
+import {useCreateHeroMutation, useGetFiltersQuery} from "../../api/apiSlice";
 import {heroesCreate} from "../../reduxSlices/heroesSlice";
 
 import {useHttp} from "../../hooks/http.hook";
@@ -31,8 +32,8 @@ const validationSchema = object({
 });
 
 const HeroesAddForm = () => {
-  const heroes = useSelector(state => state.heroes.heroes);
-  const filters = useSelector(selectAll);
+  const [createHero] = useCreateHeroMutation();
+  const {data: filters = []} = useGetFiltersQuery();
   const dispatch = useDispatch();
   const {request} = useHttp();
 
@@ -64,15 +65,8 @@ const HeroesAddForm = () => {
   }, [])
 
   const onSubmit = (data) => {
-    const allHeroes = [...heroes];
-
-    const id = createNewId(allHeroes);
-    const newHero = {id: id, ...data};
-
-    request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
-      .then(result => console.log(result))
-      .then(() => dispatch(heroesCreate(newHero)))
-      .catch(error => console.log(error));
+    const newHero = {id: uuidv4(), ...data};
+    createHero(newHero).unwrap();
     reset();
   }
 

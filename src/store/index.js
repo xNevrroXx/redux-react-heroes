@@ -1,12 +1,7 @@
-import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import {configureStore} from "@reduxjs/toolkit";
-import ReduxThunk from "redux-thunk";
-
-// reduxSlices
-// import heroes from "../reduxSlices/heroes";
-// import filters from "../reduxSlices/filters";
-import heroes from "../reduxSlices/heroesSlice";
+import { configureStore } from "@reduxjs/toolkit";
+import { apiSlice } from "../api/apiSlice";
 import filters from "../reduxSlices/filtersSlice";
+import heroes from "../reduxSlices/heroesSlice";
 
 // via applyMiddleware
 const loggerMiddleware = ({getState}) => dispatch => action => {
@@ -49,35 +44,14 @@ const stringEnhancer = (createStore) => (...args) => {
 
   return store;
 }
-const composedEnhancers = compose(
-  stringEnhancer,
-  loggerEnhancer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
-const composedEnhancersMiddleware = compose(
-  applyMiddleware(
-    ReduxThunk,
-    stringMiddleware,
-    loggerMiddleware
-  ),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
-
 
 // reducer && store
-const rootReducer = combineReducers({heroes, filters});
-const store2 = createStore(
-  rootReducer,
-  undefined,
-  // composedEnhancers
-  composedEnhancersMiddleware
-);
-
-// via configure store
 const store = configureStore({
-  reducer: {heroes, filters},
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stringMiddleware),
+  reducer: {
+    filters,
+    [apiSlice.reducerPath]: apiSlice.reducer
+  },
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stringMiddleware, apiSlice.middleware),
   preloadedState: undefined,
   devTools: process.env.NODE_ENV !== "production",
   enhancers: [loggerEnhancer]

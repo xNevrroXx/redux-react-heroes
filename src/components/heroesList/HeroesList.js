@@ -1,10 +1,8 @@
-import { useHttp } from '../../hooks/http.hook';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createSelector } from "@reduxjs/toolkit";
+import {useCallback, useMemo} from 'react';
+import { useSelector } from 'react-redux';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
-import { heroesDelete, fetchHeroes, filteredHeroesSelector } from "../../reduxSlices/heroesSlice";
+import {useDeleteHeroMutation, useGetHeroesQuery} from "../../api/apiSlice";
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
@@ -14,33 +12,30 @@ import Spinner from '../spinner/Spinner';
 // Удаление идет и с json файла при помощи метода DELETE - done
 
 const HeroesList = () => {
-  // const filteredHeroes = useSelector(state => {
-  //   console.log("render")
-  //   if(state.filters.activeFilter === "all")
-  //     return state.heroes.heroes;
-  //   else
-  //     return state.heroes.heroes.filter(hero => hero.element === state.filters.activeFilter);
-  // })
-  const filteredHeroes = useSelector(filteredHeroesSelector);
-  const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
-  const dispatch = useDispatch();
-  const {request} = useHttp();
-  useEffect(() => {
-    dispatch(fetchHeroes())
-    // eslint-disable-next-line
-  }, []);
+  const {
+    data: heroes = [],
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetHeroesQuery();
+  const [deleteHero] = useDeleteHeroMutation();
 
-  if (heroesLoadingStatus === "loading") {
+  const activeFilter = useSelector(state => state.filters.activeFilter);
+  const filteredHeroes = useMemo(() => {
+    if(activeFilter === "all")
+      return heroes;
+    else
+      return heroes.filter((hero) => hero.element === activeFilter);
+  }, [heroes, activeFilter])
+
+  const onDelete = useCallback((id) => {
+    deleteHero(id);
+  }, [])
+
+  if (isLoading || isFetching) {
     return <Spinner/>;
-  } else if (heroesLoadingStatus === "error") {
+  } else if (isError) {
     return <h5 className="text-center mt-5">Ошибка загрузки</h5>
-  }
-
-  const onDelete = (id) => {
-    request(`http://localhost:3001/heroes/${id}`, "DELETE")
-      .then(data => console.log(data, "DELETED"))
-      .then(() => dispatch(heroesDelete(id)))
-      .catch(error => console.log(error));
   }
 
   const setContent = (data) => {

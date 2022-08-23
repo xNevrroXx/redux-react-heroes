@@ -1,7 +1,8 @@
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useMemo} from "react";
-import {filtersActiveChange, selectAll as selectAllFilters} from "../../reduxSlices/filtersSlice";
-import {selectAll} from "../../reduxSlices/heroesSlice";
+
+import {filtersActiveChange} from "../../reduxSlices/filtersSlice";
+import {useGetHeroesQuery} from "../../api/apiSlice";
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных - done
@@ -10,7 +11,11 @@ import {selectAll} from "../../reduxSlices/heroesSlice";
 // Изменять json-файл для удобства МОЖНО! - made it cooler
 // Представьте, что вы попросили бэкенд-разработчика об этом - idfc
 
-const HeroesFilters = ({heroes, activeFilter, filtersActiveChange}) => {
+const HeroesFilters = () => {
+  const {data: heroes = []} = useGetHeroesQuery();
+  const activeFilter = useSelector(state => state.filters.activeFilter);
+  const dispatch = useDispatch();
+
   const getData = (power) => {
     switch (power) {
       case "earth":
@@ -44,7 +49,8 @@ const HeroesFilters = ({heroes, activeFilter, filtersActiveChange}) => {
   const onChangeFilter = (e) => {
     const targetElem = e.target;
     const filterType = targetElem.getAttribute("data-filter-type");
-    filtersActiveChange(filterType)
+    console.log("click event: ", filterType);
+    dispatch(filtersActiveChange(filterType))
   }
 
   const elems = useMemo(() => {
@@ -91,13 +97,13 @@ const HeroesFilters = ({heroes, activeFilter, filtersActiveChange}) => {
   )
 }
 
-const mapStateToProps = state => ({
-  heroes: selectAll(state),
-  activeFilter: state.filters.activeFilter
-});
-const mapDispatchToProps = dispatch => {
-  return {
-    filtersActiveChange: (filter) => dispatch(filtersActiveChange(filter))
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(HeroesFilters);
+// const mapStateToProps = state => ({
+//   heroes: selectAll(state),
+//   activeFilter: state.filters.activeFilter
+// });
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     filtersActiveChange: (filter) => dispatch(filtersActiveChange(filter))
+//   }
+// }
+export default HeroesFilters;
